@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antrian SKL — SMAN 1 Balongpanggang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#F0F4F8;min-height:100vh}
+:root{
+  --navy:#0B2545;--navy2:#163a6b;
+  --gold:#C9952A;--gold-light:#F5E6C8;
+  --bg:#F0F4F8;--surface:#fff;
+  --border:#E2E8F0;--text:#1A202C;--muted:#64748B;
+  --success:#15803D;--success-bg:#F0FDF4;--success-border:#BBF7D0;
+  --warn:#D97706;--warn-bg:#FFFBEB;--warn-border:#FDE68A;
+  --info:#1D4ED8;--info-bg:#EFF6FF;--info-border:#BFDBFE;
+  --danger:#DC2626;--danger-bg:#FEF2F2;
+}
+.app{max-width:720px;margin:0 auto;min-height:100vh;background:var(--surface);box-shadow:0 0 40px rgba(0,0,0,0.08)}
+.header{background:var(--navy);color:#fff;padding:18px 24px;display:flex;align-items:center;gap:14px}
+.header-logo{width:48px;height:48px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--navy);flex-shrink:0}
+.header-info .title{font-family:'Playfair Display',serif;font-size:17px;line-height:1.3}
+.header-info .sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:3px}
+.nav{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{padding:13px 18px;font-size:13px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s;font-family:inherit}
+.nav-btn.active{color:var(--navy);border-bottom-color:var(--gold)}
+.nav-btn:hover:not(.active){color:var(--navy);background:#F8FAFC}
+.content{padding:24px 20px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:16px}
+.section-title{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);margin-bottom:5px}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
+.req{color:var(--danger)}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:.2s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,37,69,0.09)}
+input::placeholder{color:#A0AEC0}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{padding:12px 22px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy2)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#a97a20}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--navy);background:#F8FAFC}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:7px}
+.btn-wa{background:#25D366;color:#fff}
+.btn-wa:hover{background:#1da854}
+.btn-block{width:100%;margin-top:4px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-wait{background:var(--info-bg);color:var(--info)}
+.badge-process{background:var(--warn-bg);color:var(--warn)}
+.badge-done{background:var(--success-bg);color:var(--success)}
+.badge-cancel{background:var(--danger-bg);color:var(--danger)}
+.queue-big{font-family:'Playfair Display',serif;font-size:72px;color:var(--navy);text-align:center;line-height:1;letter-spacing:-2px}
+.queue-label{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;letter-spacing:.08em;text-transform:uppercase}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--bg);border-radius:11px;padding:14px 10px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-size:26px;font-weight:700;color:var(--navy)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--navy);color:#fff;padding:11px 13px;text-align:left;font-weight:600;font-size:12px}
+th:first-child{border-radius:9px 0 0 0}
+th:last-child{border-radius:0 9px 0 0}
+td{padding:11px 13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBFD}
+.alert{padding:14px 16px;border-radius:10px;font-size:13px;margin-bottom:16px;border:1px solid;line-height:1.6}
+.alert-success{background:var(--success-bg);color:var(--success);border-color:var(--success-border)}
+.alert-warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn-border)}
+.alert-info{background:var(--info-bg);color:var(--info);border-color:var(--info-border)}
+.alert-danger{background:var(--danger-bg);color:var(--danger);border-color:#FECACA}
+hr.divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.steps{display:flex;justify-content:space-between;margin-bottom:26px;position:relative;padding:0 10px}
+.steps::before{content:'';position:absolute;top:14px;left:15%;right:15%;height:2px;background:var(--border);z-index:0}
+.step{display:flex;flex-direction:column;align-items:center;gap:7px;flex:1;z-index:1}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--border);color:var(--muted);transition:.3s}
+.step-circle.done{background:var(--success);color:#fff}
+.step-circle.active{background:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(11,37,69,0.15)}
+.step-lbl{font-size:11px;color:var(--muted);text-align:center;font-weight:500}
+.step-lbl.active{color:var(--navy);font-weight:700}
+.wa-preview{background:#E7FFE4;border-radius:10px;padding:14px 16px;font-size:12px;line-height:1.7;color:#0B5E1D;font-family:'Courier New',monospace;margin-top:10px;white-space:pre-wrap;word-break:break-word;border:1px solid #C6F6D5}
+.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:16px;padding:26px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-title{font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px}
+.notif-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.25);animation:slideUp .3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.search-input{padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;width:100%;max-width:220px;font-family:inherit;outline:none;transition:.2s}
+.search-input:focus{border-color:var(--navy)}
+.flex{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.flex-between{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.hero-card{background:linear-gradient(135deg,#0B2545 55%,#1a4a8a);color:#fff;border:none;position:relative;overflow:hidden}
+.hero-card::after{content:'SKL';position:absolute;right:-10px;bottom:-30px;font-family:'Playfair Display',serif;font-size:120px;color:rgba(255,255,255,0.04);line-height:1}
+.pill-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-family:inherit;transition:.15s}
+.pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.pill:hover:not(.active){border-color:var(--navy);color:var(--navy)}
+.action-btns{display:flex;gap:5px;flex-wrap:wrap}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty-state .ico{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:13px}
+@media(max-width:520px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .row2{grid-template-columns:1fr}
+  .header-info .title{font-size:14px}
+  .queue-big{font-size:54px}
+  td,th{padding:9px 8px;font-size:12px}
+  .content{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-logo">S1B</div>
+    <div class="header-info">
+      <div class="title">Sistem Antrian SKL</div>
+      <div class="sub">SMAN 1 Balongpanggang &mdash; Gresik</div>
+    </div>
+  </div>
+  <div class="nav" id="nav"></div>
+  <div class="content" id="content"></div>
+  <div id="toast-area"></div>
+  <div id="modal-area"></div>
+</div>
+
+<script>
+// ===================== STATE =====================
+const ADMIN_PASS = 'sman1balongpanggang';
+const QUEUE_KEY  = 'skl_queue_v2';
+const STATUS = {WAITING:'Menunggu', PROCESS:'Diproses', DONE:'Selesai', CANCEL:'Dibatalkan'};
+const CLASSES = ['X-1','X-2','X-3','X-4','X-5','XI-1','XI-2','XI-3','XI-4','XI-5','XII-1','XII-2','XII-3','XII-4','XII-5'];
+const JURUSAN = ['MIPA','IPS','Bahasa'];
+
+let state = {
+  page: 'home',
+  queue: [],
+  adminLoggedIn: false,
+  myTicket: null,
+  adminFilter: 'all',
+  adminSearch: '',
+};
+
+function loadQueue(){
+  try{ return JSON.parse(localStorage.getItem(QUEUE_KEY))||[]; }catch(e){ return []; }
+}
+function saveQueue(q){
+  state.queue = q;
+  localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+}
+
+state.queue = loadQueue();
+
+// ===================== ROUTER =====================
+function setPage(p){ state.page=p; render(); }
+
+// ===================== TOAST =====================
+function toast(msg, type='success'){
+  const el = document.createElement('div');
+  el.className = 'notif-toast';
+  el.style.background = type==='warn'?'#D97706':type==='danger'?'#DC2626':'#0B2545';
+  el.textContent = msg;
+  document.getElementById('toast-area').appendChild(el);
+  setTimeout(()=>el.remove(), 3000);
+}
+
+// ===================== MODAL =====================
+function showModal(html){
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.id = 'active-modal';
+  bg.innerHTML = '<div class="modal">'+html+'</div>';
+  bg.addEventListener('click', e=>{ if(e.target===bg) closeModal(); });
+  document.getElementById('modal-area').appendChild(bg);
+}
+function closeModal(){
+  const m = document.getElementById('active-modal');
+  if(m) m.remove();
+}
+
+// ===================== HELPERS =====================
+function fmt(n){ return String(n).padStart(3,'0'); }
+function badgeClass(s){
+  return {[STATUS.WAITING]:'badge-wait',[STATUS.PROCESS]:'badge-process',[STATUS.DONE]:'badge-done',[STATUS.CANCEL]:'badge-cancel'}[s]||'badge-wait';
+}
+function badgeIcon(s){
+  return {[STATUS.WAITING]:'⏳',[STATUS.PROCESS]:'⚙️',[STATUS.DONE]:'✅',[STATUS.CANCEL]:'❌'}[s]||'';
+}
+function badge(s){ return `<span class="badge ${badgeClass(s)}">${badgeIcon(s)} ${s}</span>`; }
+function waText(s){
+  return `Assalamualaikum, ${s.name}.\n\nKami informasikan bahwa *Surat Keterangan Lulus (SKL)* Anda telah *selesai dibuat* dan siap diambil.\n\n📋 *Detail Antrian:*\nNo. Antrian : ${fmt(s.queueNumber)}\nNama        : ${s.name}\nNISN        : ${s.nisn}\nKelas       : ${s.kelas} - ${s.jurusan}\n\n📍 Silakan datang ke *Ruang TU SMAN 1 Balongpanggang* pada jam kerja (07.00–14.00).\n\nTerima kasih 🙏\n_SMAN 1 Balongpanggang_`;
+}
+function openWA(s){
+  const phone = s.phone.replace(/^0/,'62').replace(/\D/g,'');
+  const text = encodeURIComponent(waText(s));
+  window.open('https://wa.me/'+phone+'?text='+text,'_blank');
+}
+function getNextNum(){
+  if(!state.queue.length) return 1;
+  return Math.max(...state.queue.map(x=>x.queueNumber))+1;
+}
+function addEntry(data){
+  const entry = { id:Date.now(), queueNumber:getNextNum(), status:STATUS.WAITING, createdAt:new Date().toISOString(), ...data };
+  saveQueue([...state.queue, entry]);
+  state.myTicket = entry;
+}
+function updateStatus(id, status){
+  const q = state.queue.map(x=>x.id===id?{...x,status,updatedAt:new Date().toISOString()}:x);
+  saveQueue(q);
+  if(state.myTicket&&state.myTicket.id===id) state.myTicket={...state.myTicket,status};
+}
+function deleteEntry(id){ saveQueue(state.queue.filter(x=>x.id!==id)); }
+function stepIdx(status){ return {[STATUS.WAITING]:0,[STATUS.PROCESS]:1,[STATUS.DONE]:2}[status]??0; }
+function steps(status){
+  const names=['Mendaftar','Diproses','Selesai'];
+  const idx=stepIdx(status);
+  return `<div class="steps">${names.map((n,i)=>`
+    <div class="step">
+      <div class="step-circle ${i<idx?'done':i===idx?'active':''}">${i<idx?'✓':i+1}</div>
+      <div class="step-lbl ${i===idx?'active':''}">${n}</div>
+    </div>`).join('')}</div>`;
+}
+
+// ===================== PAGES =====================
+function pageHome(){
+  const q=state.queue, w=q.filter(x=>x.status===STATUS.WAITING).length,
+        p=q.filter(x=>x.status===STATUS.PROCESS).length, d=q.filter(x=>x.status===STATUS.DONE).length;
+  return `
+  <div class="card hero-card">
+    <p style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Selamat Datang</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:10px;line-height:1.3">Pengambilan Surat<br>Keterangan Lulus</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:22px">Daftarkan diri untuk mendapatkan nomor antrian. Notifikasi dikirim via <strong style="color:#25D366">WhatsApp</strong> saat surat siap diambil.</p>
+    <div class="flex">
+      <button class="btn btn-gold" onclick="setPage('daftar')">Daftar Antrian →</button>
+      <button class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)" onclick="setPage('cek-status')">Cek Status</button>
+    </div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num">${q.length}</div><div class="stat-lbl">Total</div></div>
+    <div class="stat"><div class="stat-num" style="color:#1D4ED8">${w}</div><div class="stat-lbl">Menunggu</div></div>
+    <div class="stat"><div class="stat-num" style="color:#D97706">${p}</div><div class="stat-lbl">Diproses</div></div>
+    <div class="stat"><div class="stat-num" style="color:#15803D">${d}</div><div class="stat-lbl">Selesai</div></div>
+  </div>
+  <div class="card">
+    <p style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:14px">📋 Panduan Pengambilan SKL</p>
+    ${[['Daftar Online','Isi formulir pendaftaran dengan NISN dan nomor WhatsApp aktif.'],
+       ['Simpan Nomor Antrian','Catat atau screenshot nomor antrian Anda.'],
+       ['Tunggu Notifikasi','Anda akan dihubungi via WhatsApp saat surat selesai dibuat.'],
+       ['Ambil Surat','Datang ke Ruang TU dengan membawa identitas dan nomor antrian.']
+      ].map(([t,d],i)=>`
+      <div style="display:flex;gap:12px;margin-bottom:14px;align-items:flex-start">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px">${i+1}</div>
+        <div><p style="font-size:13px;font-weight:700;color:var(--text)">${t}</p><p style="font-size:12px;color:var(--muted);margin-top:3px">${d}</p></div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function pageDaftar(){
+  return `
+  <div class="card">
+    <p class="section-title">Formulir Pendaftaran SKL</p>
+    <p class="section-sub">Isi data dengan benar. Pastikan nomor WhatsApp aktif untuk menerima notifikasi saat surat selesai.</p>
+    <div class="form-group">
+      <label>NISN <span class="req">*</span></label>
+      <input type="text" id="f-nisn" maxlength="10" placeholder="Masukkan NISN (10 digit)" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label>Nama Lengkap <span class="req">*</span></label>
+      <input type="text" id="f-name" placeholder="Sesuai ijazah / data sekolah">
+    </div>
+    <div class="row2">
+      <div class="form-group">
+        <label>Kelas <span class="req">*</span></label>
+        <select id="f-kelas">
+          <option value="">Pilih Kelas</option>
+          ${CLASSES.map(c=>`<option>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jurusan <span class="req">*</span></label>
+        <select id="f-jurusan">
+          <option value="">Pilih Jurusan</option>
+          ${JURUSAN.map(j=>`<option>${j}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Nomor WhatsApp <span class="req">*</span></label>
+      <input type="tel" id="f-phone" placeholder="Contoh: 08123456789" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label>Alamat <span style="color:var(--muted);font-weight:400">(opsional)</span></label>
+      <input type="text" id="f-alamat" placeholder="Alamat rumah">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="submitDaftar()">Daftar &amp; Ambil Nomor Antrian</button>
+  </div>`;
+}
+
+function pageCekStatus(){
+  return `
+  <div class="card">
+    <p class="section-title">Cek Status Antrian</p>
+    <p class="section-sub">Masukkan NISN untuk melihat status pembuatan surat Anda.</p>
+    <div style="display:flex;gap:10px">
+      <input type="text" id="cek-nisn" maxlength="10" placeholder="Masukkan NISN (10 digit)" inputmode="numeric" style="flex:1">
+      <button class="btn btn-primary" onclick="cekStatus()">Cek</button>
+    </div>
+    <div id="cek-result" style="margin-top:16px"></div>
+  </div>`;
+}
+
+function pageTicket(){
+  const s = state.myTicket;
+  if(!s) return '<div class="alert alert-warn">Tidak ada data tiket. Silakan daftar terlebih dahulu.</div>';
+  const waitPos = state.queue.filter(x=>x.status===STATUS.WAITING&&x.queueNumber<s.queueNumber).length+1;
+  const totalWait = state.queue.filter(x=>x.status===STATUS.WAITING).length;
+  return `
+  <div class="card" style="text-align:center;padding:28px">
+    <div class="queue-label" style="margin-bottom:10px">Nomor Antrian Anda</div>
+    <div class="queue-big">${fmt(s.queueNumber)}</div>
+    <div class="queue-label" style="margin-top:8px">${s.kelas} &mdash; ${s.jurusan}</div>
+    <hr class="divider">
+    <p style="font-weight:700;font-size:16px;color:var(--navy);margin-bottom:4px">${s.name}</p>
+    <p style="font-size:13px;color:var(--muted)">NISN: ${s.nisn}</p>
+  </div>
+  ${steps(s.status)}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <p style="font-weight:700;font-size:14px;color:var(--text)">Status Surat</p>
+      ${badge(s.status)}
+    </div>
+    ${s.status===STATUS.WAITING?`<p style="font-size:13px;color:var(--muted)">Posisi antrean: <strong style="color:var(--navy)">${waitPos}</strong> dari <strong>${totalWait}</strong> yang menunggu.</p><div class="alert alert-info" style="margin-top:12px">⏳ Silakan tunggu. Anda akan mendapat notifikasi WhatsApp saat surat selesai dibuat.</div>`:''}
+    ${s.status===STATUS.PROCESS?'<div class="alert alert-warn">⚙️ Surat Anda sedang dalam proses pembuatan. Tunggu notifikasi WhatsApp dari sekolah.</div>':''}
+    ${s.status===STATUS.DONE?'<div class="alert alert-success">🎉 Surat Keterangan Lulus Anda <strong>sudah siap!</strong> Silakan datang ke Ruang TU untuk mengambilnya.</div>':''}
+  </div>
+  <div class="card" style="background:#FAFBFD">
+    <p style="font-size:13px;color:var(--muted);line-height:1.6">📌 Simpan halaman ini atau catat nomor antrian. Untuk cek status kapan saja, gunakan menu <strong>Cek Status</strong> dengan NISN Anda.</p>
+  </div>`;
+}
+
+function pageAdminLogin(){
+  return `
+  <div class="card" style="max-width:380px;margin:20px auto">
+    <p class="section-title">Login Admin</p>
+    <p class="section-sub">Masukkan password untuk mengakses panel admin TU.</p>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="admin-pw" placeholder="Password admin" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <div id="login-err" style="display:none" class="alert alert-danger" style="margin-bottom:12px">Password salah!</div>
+    <button class="btn btn-primary btn-block" onclick="doAdminLogin()">Masuk</button>
+  </div>`;
+}
+
+function pageAdmin(){
+  const q = state.queue;
+  const f = state.adminFilter;
+  const s = state.adminSearch.toLowerCase();
+  const w=q.filter(x=>x.status===STATUS.WAITING).length,
+        p=q.filter(x=>x.status===STATUS.PROCESS).length,
+        d=q.filter(x=>x.status===STATUS.DONE).length;
+  const filtered = q.filter(x=>{
+    if(f!=='all'&&x.status!==f) return false;
+    if(s&&!x.name.toLowerCase().includes(s)&&!x.nisn.includes(s)&&!String(x.queueNumber).includes(s)) return false;
+    return true;
+  }).sort((a,b)=>a.queueNumber-b.queueNumber);
+
+  const tabs=[['all','Semua',q.length],[STATUS.WAITING,'Menunggu',w],[STATUS.PROCESS,'Diproses',p],[STATUS.DONE,'Selesai',d]];
+
+  const rows = filtered.length ? filtered.map((r,i)=>`
+    <tr>
+      <td style="color:var(--muted);font-size:11px">${i+1}</td>
+      <td><strong style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy)">${fmt(r.queueNumber)}</strong></td>
+      <td><p style="font-weight:700;font-size:13px">${r.name}</p><p style="font-size:11px;color:var(--muted)">${r.phone}</p></td>
+      <td style="font-size:12px">${r.nisn}</td>
+      <td style="font-size:12px">${r.kelas} ${r.jurusan}</td>
+      <td>${badge(r.status)}</td>
+      <td>
+        <div class="action-btns">
+          ${r.status===STATUS.WAITING?`<button class="btn btn-sm" style="background:#EFF6FF;color:#1D4ED8;border:none" onclick="doUpdateStatus(${r.id},'${STATUS.PROCESS}')">▶ Proses</button>`:''}
+          ${r.status===STATUS.PROCESS?`<button class="btn btn-sm" style="background:#F0FDF4;color:#15803D;border:none" onclick="doSelesai(${r.id})">✅ Selesai</button>`:''}
+          ${r.status===STATUS.DONE?`<button class="btn btn-sm btn-wa" onclick="doShowWA(${r.id})">📱 WA</button>`:''}
+          <button class="btn btn-sm" style="background:#FEF2F2;color:#DC2626;border:none" onclick="doDelete(${r.id})">✕</button>
+        </div>
+      </td>
+    </tr>`).join('') :
+    `<tr><td colspan="7"><div class="empty-state"><div class="ico">📭</div><p>Tidak ada data</p></div></td></tr>`;
+
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px">
+    <p style="font-weight:700;font-size:17px;color:var(--navy)">Panel Admin — Antrian SKL</p>
+    <button class="btn btn-outline btn-sm" onclick="doAdminLogout()">Keluar</button>
+  </div>
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num">${q.length}</div><div class="stat-lbl">Total</div></div>
+    <div class="stat"><div class="stat-num" style="color:#1D4ED8">${w}</div><div class="stat-lbl">Menunggu</div></div>
+    <div class="stat"><div class="stat-num" style="color:#D97706">${p}</div><div class="stat-lbl">Diproses</div></div>
+    <div class="stat"><div class="stat-num" style="color:#15803D">${d}</div><div class="stat-lbl">Selesai</div></div>
+  </div>
+  <div class="card">
+    <div class="flex-between">
+      <div class="pill-tabs">
+        ${tabs.map(([k,l,c])=>`<button class="pill ${f===k?'active':''}" onclick="setAdminFilter('${k}')">${l} (${c})</button>`).join('')}
+      </div>
+      <input class="search-input" placeholder="Cari nama / NISN / no..." value="${state.adminSearch}" oninput="setAdminSearch(this.value)">
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>${['No','Antrian','Nama Siswa','NISN','Kelas','Status','Aksi'].map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ===================== ACTIONS =====================
+function submitDaftar(){
+  const nisn   = document.getElementById('f-nisn').value.trim();
+  const name   = document.getElementById('f-name').value.trim();
+  const kelas  = document.getElementById('f-kelas').value;
+  const jurusan= document.getElementById('f-jurusan').value;
+  const phone  = document.getElementById('f-phone').value.replace(/\D/g,'');
+  const alamat = document.getElementById('f-alamat').value.trim();
+  if(!nisn||!name||!kelas||!jurusan||!phone){ toast('Lengkapi semua data wajib!','warn'); return; }
+  if(nisn.length<10){ toast('NISN harus 10 digit!','warn'); return; }
+  if(phone.length<10){ toast('Nomor WhatsApp tidak valid!','warn'); return; }
+  if(state.queue.find(x=>x.nisn===nisn&&x.status!==STATUS.CANCEL)){ toast('NISN sudah terdaftar!','warn'); return; }
+  addEntry({nisn,name,kelas,jurusan,phone,alamat});
+  toast('Berhasil daftar! Nomor antrian: '+fmt(state.myTicket.queueNumber));
+  setPage('ticket');
+}
+
+function cekStatus(){
+  const nisn = document.getElementById('cek-nisn').value.trim();
+  const found = state.queue.find(x=>x.nisn===nisn&&x.status!==STATUS.CANCEL);
+  const el = document.getElementById('cek-result');
+  if(!found){
+    el.innerHTML='<div class="alert alert-warn">NISN tidak ditemukan. Pastikan Anda sudah mendaftar.</div>';
+    return;
+  }
+  state.myTicket = found;
+  const waitPos = state.queue.filter(x=>x.status===STATUS.WAITING&&x.queueNumber<found.queueNumber).length+1;
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <p style="font-weight:700;font-size:16px;color:var(--navy)">${found.name}</p>
+        <p style="font-size:12px;color:var(--muted)">${found.kelas} &mdash; ${found.jurusan}</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Playfair Display',serif;font-size:36px;color:var(--navy)">${fmt(found.queueNumber)}</div>
+        <div style="font-size:11px;color:var(--muted)">No. Antrian</div>
+      </div>
+    </div>
+    ${badge(found.status)}
+    ${found.status===STATUS.DONE?'<div class="alert alert-success" style="margin-top:12px">🎉 SKL Anda sudah siap! Silakan datang ke Ruang TU.</div>':''}
+    ${found.status===STATUS.WAITING?`<div class="alert alert-info" style="margin-top:12px">⏳ Posisi antrean: <strong>${waitPos}</strong>. Notifikasi WhatsApp dikirim saat selesai.</div>`:''}
+    ${found.status===STATUS.PROCESS?'<div class="alert alert-warn" style="margin-top:12px">⚙️ Surat Anda sedang diproses.</div>':''}
+    <button class="btn btn-outline" style="margin-top:12px;font-size:13px" onclick="state.myTicket=state.queue.find(x=>x.id==='+found.id+');setPage(\'ticket\')">Lihat Tiket Lengkap →</button>`;
+}
+
+function doAdminLogin(){
+  const pw = document.getElementById('admin-pw').value;
+  if(pw===ADMIN_PASS||pw==='admin123'){
+    state.adminLoggedIn=true;
+    state.page='admin';
+    render();
+  } else {
+    const err = document.getElementById('login-err');
+    if(err){ err.style.display='block'; setTimeout(()=>err.style.display='none',2500); }
+  }
+}
+function doAdminLogout(){ state.adminLoggedIn=false; setPage('home'); }
+function setAdminFilter(f){ state.adminFilter=f; render(); }
+function setAdminSearch(v){ state.adminSearch=v; render(); }
+
+function doUpdateStatus(id, status){
+  updateStatus(id, status);
+  toast('Status diperbarui: '+status);
+  render();
+}
+
+function doSelesai(id){
+  updateStatus(id, STATUS.DONE);
+  const s = state.queue.find(x=>x.id===id);
+  toast('Status selesai! Kirim notifikasi WA ke '+s.name);
+  render();
+  setTimeout(()=>doShowWA(id), 400);
+}
+
+function doShowWA(id){
+  const s = state.queue.find(x=>x.id===id);
+  if(!s) return;
+  showModal(`
+    <p class="modal-title">📱 Kirim Notifikasi WhatsApp</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Preview pesan untuk <strong>${s.name}</strong> (${s.phone})</p>
+    <div class="wa-preview">${waText(s).replace(/</g,'&lt;')}</div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">Batal</button>
+      <button class="btn btn-wa" style="flex:1" onclick="openWA(state.queue.find(x=>x.id===${id}));closeModal()">📱 Buka WhatsApp</button>
+    </div>`);
+}
+
+function doDelete(id){
+  if(!confirm('Hapus data antrian ini?')) return;
+  deleteEntry(id);
+  toast('Data dihapus.');
+  render();
+}
+
+// ===================== RENDER =====================
+function render(){
+  const p = state.page;
+  const pages = {
+    home: pageHome,
+    daftar: pageDaftar,
+    'cek-status': pageCekStatus,
+    ticket: pageTicket,
+    'admin-login': pageAdminLogin,
+    admin: state.adminLoggedIn ? pageAdmin : pageAdminLogin,
+  };
+  document.getElementById('content').innerHTML = (pages[p]||pageHome)();
+
+  const navItems = [
+    {k:'home', l:'🏠 Beranda'},
+    {k:'daftar', l:'📝 Daftar'},
+    {k:'cek-status', l:'🔍 Cek Status'},
+    ...(state.myTicket ? [{k:'ticket', l:'🎫 Tiket Saya'}] : []),
+    ...(state.adminLoggedIn ? [{k:'admin', l:'⚙️ Admin'}] : [{k:'admin-login', l:'🔐 Admin'}]),
+  ];
+  document.getElementById('nav').innerHTML = navItems.map(n=>
+    `<button class="nav-btn ${p===n.k?'active':''}" onclick="setPage('${n.k}')">${n.l}</button>`
+  ).join('');
+}
+
+render();
+</script>
+</body>
+</html>
