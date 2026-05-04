@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antrian SKL – SMAN 1 Balongpanggang</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-50: #EAF3DE; --green-100: #C0DD97; --green-200: #97C459;
+    --green-600: #3B6D11; --green-700: #2C5209; --green-800: #27500A;
+    --teal-50: #E1F5EE; --teal-400: #1D9E75; --teal-600: #0F6E56;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-600: #5F5E5A;
+    --amber-400: #BA7517; --amber-50: #FAEEDA;
+    --red-50: #FCEBEB; --red-600: #A32D2D; --red-400: #E24B4A;
+    --white: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(135deg, #f0f7e8 0%, #e1f0d8 50%, #d4ead0 100%);
+    min-height: 100vh;
+    color: #1a2e0a;
+  }
+  header {
+    background: white;
+    border-bottom: 3px solid var(--green-600);
+    padding: 0;
+    box-shadow: 0 2px 20px rgba(39,80,10,0.12);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .logo-wrapper {
+    width: 72px; height: 72px;
+    background: var(--green-600);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 3px solid var(--green-200);
+  }
+  .logo-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .logo-svg {
+    width: 62px; height: 62px;
+  }
+  .school-info h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green-700);
+    line-height: 1.2;
+  }
+  .school-info p {
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .badge-skl {
+    margin-left: auto;
+    background: var(--green-50);
+    border: 1px solid var(--green-200);
+    color: var(--green-700);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
+  .hero {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .hero h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    color: var(--green-700);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .hero p {
+    color: var(--gray-600);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 32px rgba(39,80,10,0.10);
+    padding: 36px;
+    margin-bottom: 24px;
+  }
+  .card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--green-700);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card h3 .icon {
+    width: 32px; height: 32px;
+    background: var(--green-50);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .form-group { margin-bottom: 20px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green-700);
+    margin-bottom: 7px;
+    letter-spacing: 0.2px;
+  }
+  label span.req { color: var(--red-400); margin-left: 3px; }
+  input[type="text"], input[type="tel"], select, input[type="number"] {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--gray-100);
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: #1a2e0a;
+    background: #fafcf8;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--green-600);
+    box-shadow: 0 0 0 3px rgba(59,109,17,0.12);
+    background: white;
+  }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233B6D11' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 44px;
+    cursor: pointer;
+  }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--green-600);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+    letter-spacing: 0.2px;
+  }
+  .btn-submit:hover { background: var(--green-700); }
+  .btn-submit:active { transform: scale(0.99); }
+  .btn-submit:disabled { background: var(--gray-100); color: var(--gray-600); cursor: not-allowed; }
+  .info-box {
+    background: var(--teal-50);
+    border: 1.5px solid #9FE1CB;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--teal-600);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .info-box strong { display: block; margin-bottom: 4px; color: #0F6E56; font-size: 13px; }
+  .wa-note {
+    background: #f0faf5;
+    border: 1.5px solid #9FE1CB;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--teal-600);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .wa-icon { font-size: 20px; flex-shrink: 0; margin-top: -1px; }
+  .alert { padding: 16px 20px; border-radius: 14px; font-size: 14px; margin-bottom: 20px; display: none; line-height: 1.5; }
+  .alert.success { background: var(--green-50); border: 1.5px solid var(--green-200); color: var(--green-700); display: block; }
+  .alert.error { background: var(--red-50); border: 1.5px solid #F7C1C1; color: var(--red-600); display: block; }
+  .ticket-card {
+    background: white;
+    border: 2.5px solid var(--green-600);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    display: none;
+  }
+  .ticket-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--green-600), var(--teal-400));
+  }
+  .ticket-num {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--green-600);
+    line-height: 1;
+    margin: 10px 0 4px;
+  }
+  .ticket-label { font-size: 12px; color: var(--gray-600); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
+  .ticket-info { margin-top: 16px; font-size: 14px; color: #2a4a12; line-height: 1.7; }
+  .ticket-info strong { color: var(--green-700); }
+  .btn-check {
+    background: transparent;
+    border: 1.5px solid var(--green-600);
+    color: var(--green-600);
+    padding: 11px 28px;
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.2s;
+  }
+  .btn-check:hover { background: var(--green-50); }
+  .status-section { display: none; }
+  .status-result {
+    text-align: center;
+    padding: 28px 20px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  .status-menunggu { background: var(--amber-50); color: var(--amber-400); border: 1.5px solid #FAC775; }
+  .status-siap { background: var(--green-50); color: var(--green-600); border: 1.5px solid var(--green-200); animation: pulse-green 2s infinite; }
+  .status-diambil { background: var(--teal-50); color: var(--teal-600); border: 1.5px solid #9FE1CB; }
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,109,17,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(59,109,17,0); }
+  }
+  .antrean-counter { text-align: center; margin-bottom: 32px; }
+  .counter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+  .counter-box { background: white; border-radius: 14px; padding: 18px 10px; border: 1px solid var(--gray-100); }
+  .counter-num { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 700; color: var(--green-600); }
+  .counter-lbl { font-size: 11px; color: var(--gray-600); margin-top: 2px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
+  .link-admin { text-align: center; margin-top: 24px; }
+  .link-admin a { color: var(--green-600); font-size: 13px; text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--green-200); padding-bottom: 1px; }
+  .loading { opacity: 0.6; pointer-events: none; }
+  footer {
+    text-align: center;
+    padding: 32px 20px;
+    font-size: 12px;
+    color: var(--gray-600);
+    border-top: 1px solid rgba(59,109,17,0.12);
+    margin-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .row-2 { grid-template-columns: 1fr; }
+    .header-inner { gap: 12px; }
+    .school-info h1 { font-size: 15px; }
+    .badge-skl { display: none; }
+    .card { padding: 24px 20px; }
+    .ticket-num { font-size: 48px; }
+    .counter-grid { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-wrapper">
+      <!-- Logo sekolah: ganti src dengan URL logo asli jika tersedia -->
+      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#27500A"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#C0DD97" stroke-width="2"/>
+        <polygon points="50,18 56,38 77,38 61,51 67,71 50,58 33,71 39,51 23,38 44,38" fill="#C0DD97"/>
+        <text x="50" y="90" text-anchor="middle" font-family="serif" font-size="9" fill="#C0DD97" font-weight="bold">SMAN 1</text>
+      </svg>
+    </div>
+    <div class="school-info">
+      <h1>SMAN 1 Balongpanggang</h1>
+      <p>Jl. Raya Balongpanggang, Gresik, Jawa Timur<br>NPSN: 20500684</p>
+    </div>
+    <div class="badge-skl">Antrian SKL 2025/2026</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h2>Ambil Nomor Antrian<br><em>Surat Keterangan Lulus</em></h2>
+    <p>Tahun Pelajaran 2025/2026 &nbsp;·&nbsp; Daftar online, ambil surat tepat waktu</p>
+  </div>
+
+  <!-- Counter Statistik -->
+  <div class="antrean-counter">
+    <div class="counter-grid">
+      <div class="counter-box">
+        <div class="counter-num" id="stat-total">–</div>
+        <div class="counter-lbl">Total Daftar</div>
+      </div>
+      <div class="counter-box">
+        <div class="counter-num" id="stat-menunggu">–</div>
+        <div class="counter-lbl">Menunggu</div>
+      </div>
+      <div class="counter-box">
+        <div class="counter-num" id="stat-siap">–</div>
+        <div class="counter-lbl">Siap Diambil</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert" id="alert-box"></div>
+
+  <!-- Form Pendaftaran -->
+  <div class="card" id="form-card">
+    <h3><span class="icon">📝</span> Data Diri Siswa</h3>
+    <div class="info-box">
+      <strong>📌 Petunjuk Pengisian</strong>
+      Isi data dengan benar sesuai data di sekolah. Nomor WhatsApp akan digunakan untuk mengirim notifikasi saat surat siap diambil.
+    </div>
+
+    <div class="form-group">
+      <label>Nama Lengkap <span class="req">*</span></label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap sesuai ijazah" autocomplete="name">
+    </div>
+
+    <div class="row-2">
+      <div class="form-group">
+        <label>Nomor Induk Siswa (NIS) <span class="req">*</span></label>
+        <input type="text" id="nis" placeholder="contoh: 1234" maxlength="10">
+      </div>
+      <div class="form-group">
+        <label>Kelas <span class="req">*</span></label>
+        <select id="kelas">
+          <option value="">-- Pilih Kelas --</option>
+          <option value="XII 1">XII 1</option>
+          <option value="XII 2">XII 2</option>
+          <option value="XII 3">XII 3</option>
+          <option value="XII 4">XII 4</option>
+          <option value="XII 5">XII 5</option>
+          <option value="XII 6">XII 6</option>
+          <option value="XII 7">XII 7</option>
+          <option value="XII 8">XII 8</option>
+          <option value="XII 9">XII 9</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Nomor WhatsApp <span class="req">*</span></label>
+      <input type="tel" id="wa" placeholder="contoh: 08123456789" maxlength="15">
+      <div style="margin-top:8px;">
+        <div class="wa-note">
+          <span class="wa-icon">💬</span>
+          <span>Notifikasi WhatsApp akan dikirim ke nomor ini saat <strong>Surat Keterangan Lulus</strong> Anda sudah siap diambil di sekolah.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Catatan (opsional)</label>
+      <input type="text" id="catatan" placeholder="Contoh: titip ke wali, dll.">
+    </div>
+
+    <button class="btn-submit" id="btn-daftar" onclick="daftarAntrian()">
+      Daftar Antrian Sekarang →
+    </button>
+  </div>
+
+  <!-- Tiket Antrian (muncul setelah daftar) -->
+  <div class="ticket-card" id="ticket-card">
+    <div class="ticket-label">Nomor Antrian Anda</div>
+    <div class="ticket-num" id="ticket-number">001</div>
+    <div class="ticket-label" style="color: var(--green-600);">🎉 Pendaftaran Berhasil!</div>
+    <div class="ticket-info" id="ticket-info"></div>
+    <button class="btn-check" onclick="cekStatusDariTiket()">Cek Status Surat Saya</button>
+    <button class="btn-check" onclick="daftarLagi()" style="margin-left:8px; border-color: var(--gray-100); color: var(--gray-600);">Daftar Baru</button>
+  </div>
+
+  <!-- Cek Status -->
+  <div class="card status-section" id="status-section">
+    <h3><span class="icon">🔍</span> Cek Status Antrian</h3>
+    <div class="form-group">
+      <label>Masukkan NIS Anda</label>
+      <input type="text" id="nis-cek" placeholder="Nomor Induk Siswa" maxlength="10">
+    </div>
+    <button class="btn-submit" onclick="cekStatus()">Cek Status →</button>
+    <div class="status-result" id="status-result" style="display:none;"></div>
+  </div>
+
+  <div class="link-admin">
+    <a href="admin.html">🔐 Login Admin</a>
+    &nbsp;|&nbsp;
+    <a href="#" onclick="toggleCek()">🔍 Cek Status Antrian</a>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 SMAN 1 Balongpanggang &nbsp;·&nbsp; Sistem Antrian SKL TP 2025/2026<br>
+  Jl. Raya Balongpanggang, Kab. Gresik, Jawa Timur
+</footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // =====================================================
+  // KONFIGURASI FIREBASE — GANTI DENGAN MILIK ANDA
+  // =====================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbabiGXsPpYkhVgpSpqo2M5kjl1yJ0YKU",
+    authDomain: "skl-sman1balongpanggang.firebaseapp.com",
+    projectId: "skl-sman1balongpanggang",
+    storageBucket: "skl-sman1balongpanggang.firebasestorage.app",
+    messagingSenderId: "192711266431",
+    appId: "1:192711266431:web:142bc018d05fcb2bad6f4a"
+  };
+  // =====================================================
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window._db = db;
+  window._collection = collection;
+  window._addDoc = addDoc;
+  window._getDocs = getDocs;
+  window._query = query;
+  window._where = where;
+  window._orderBy = orderBy;
+  window._onSnapshot = onSnapshot;
+  window._serverTimestamp = serverTimestamp;
+
+  // Statistik realtime
+  function muatStatistik() {
+    const q = query(collection(db, "antrian_skl"));
+    onSnapshot(q, (snap) => {
+      let total = snap.size, menunggu = 0, siap = 0;
+      snap.forEach(d => {
+        const s = d.data().status;
+        if (s === 'menunggu') menunggu++;
+        if (s === 'siap') siap++;
+      });
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-menunggu').textContent = menunggu;
+      document.getElementById('stat-siap').textContent = siap;
+    });
+  }
+  muatStatistik();
+
+  window.daftarAntrian = async function() {
+    const nama = document.getElementById('nama').value.trim();
+    const nis = document.getElementById('nis').value.trim();
+    const kelas = document.getElementById('kelas').value;
+    const wa = document.getElementById('wa').value.trim();
+    const catatan = document.getElementById('catatan').value.trim();
+
+    if (!nama || !nis || !kelas || !wa) {
+      showAlert('Harap lengkapi semua field yang wajib diisi.', 'error'); return;
+    }
+    if (!/^08[0-9]{8,12}$/.test(wa)) {
+      showAlert('Format nomor WhatsApp tidak valid. Mulai dengan 08...', 'error'); return;
+    }
+
+    // Cek NIS duplikat
+    const qNis = query(collection(db, "antrian_skl"), where("nis", "==", nis));
+    const existing = await getDocs(qNis);
+    if (!existing.empty) {
+      showAlert(`NIS ${nis} sudah terdaftar! Nomor antrian Anda: <strong>${existing.docs[0].data().nomor_antrian}</strong>. Silakan cek status di bawah.`, 'error'); return;
+    }
+
+    // Ambil nomor antrian berikutnya
+    const allSnap = await getDocs(collection(db, "antrian_skl"));
+    const nextNum = allSnap.size + 1;
+    const nomorAntrian = String(nextNum).padStart(3, '0');
+
+    document.getElementById('btn-daftar').disabled = true;
+    document.getElementById('btn-daftar').textContent = 'Mendaftarkan...';
+
+    try {
+      const docRef = await addDoc(collection(db, "antrian_skl"), {
+        nama, nis, kelas, wa, catatan,
+        nomor_antrian: nomorAntrian,
+        status: 'menunggu',
+        waktu_daftar: serverTimestamp(),
+        wa_terkirim: false
+      });
+
+      // Tampilkan tiket
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('alert-box').style.display = 'none';
+      const tc = document.getElementById('ticket-card');
+      tc.style.display = 'block';
+      document.getElementById('ticket-number').textContent = nomorAntrian;
+      document.getElementById('ticket-info').innerHTML = `
+        <strong>${nama}</strong><br>
+        Kelas ${kelas} &nbsp;·&nbsp; NIS: ${nis}<br>
+        <span style="color:var(--gray-600); font-size:13px;">WA: ${wa}</span><br><br>
+        <span style="font-size:13px; color:var(--teal-600);">💬 Notifikasi WhatsApp akan dikirim saat surat siap diambil.</span><br>
+        <span style="font-size:12px; color:var(--gray-600);">Simpan nomor antrian ini sebagai bukti pendaftaran.</span>
+      `;
+      window._lastNis = nis;
+    } catch (e) {
+      showAlert('Gagal mendaftar: ' + e.message, 'error');
+      document.getElementById('btn-daftar').disabled = false;
+      document.getElementById('btn-daftar').textContent = 'Daftar Antrian Sekarang →';
+    }
+  };
+
+  window.cekStatus = async function() {
+    const nis = document.getElementById('nis-cek').value.trim();
+    if (!nis) { showAlert('Masukkan NIS terlebih dahulu.', 'error'); return; }
+    const qNis = query(collection(db, "antrian_skl"), where("nis", "==", nis));
+    const snap = await getDocs(qNis);
+    const resultDiv = document.getElementById('status-result');
+    resultDiv.style.display = 'block';
+    if (snap.empty) {
+      resultDiv.innerHTML = `<div style="color:var(--red-600); font-size:14px;">❌ NIS <strong>${nis}</strong> tidak ditemukan dalam antrian.</div>`;
+      return;
+    }
+    const d = snap.docs[0].data();
+    const labelStatus = { menunggu: '⏳ Menunggu Diproses', siap: '✅ Siap Diambil!', diambil: '📋 Sudah Diambil' };
+    const badgeClass = { menunggu: 'status-menunggu', siap: 'status-siap', diambil: 'status-diambil' };
+    resultDiv.innerHTML = `
+      <div class="status-badge ${badgeClass[d.status] || 'status-menunggu'}">${labelStatus[d.status] || d.status}</div>
+      <div style="font-size:22px; font-family:'Fraunces',serif; color:var(--green-600); margin:8px 0;">#${d.nomor_antrian}</div>
+      <div style="font-size:14px; color:#2a4a12; line-height:1.7;">
+        <strong>${d.nama}</strong><br>Kelas ${d.kelas} &nbsp;·&nbsp; NIS: ${d.nis}
+      </div>
+      ${d.status === 'siap' ? '<div style="margin-top:14px; padding:12px 16px; background:var(--green-50); border-radius:10px; font-size:13px; color:var(--green-700);"><strong>🎉 Surat Anda sudah siap!</strong><br>Segera datang ke bagian TU sekolah dengan membawa identitas diri.</div>' : ''}
+    `;
+  };
+
+  window.cekStatusDariTiket = function() {
+    document.getElementById('status-section').style.display = 'block';
+    document.getElementById('nis-cek').value = window._lastNis || '';
+    document.getElementById('status-section').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window.daftarLagi = function() {
+    document.getElementById('ticket-card').style.display = 'none';
+    document.getElementById('form-card').style.display = 'block';
+    document.getElementById('nama').value = '';
+    document.getElementById('nis').value = '';
+    document.getElementById('kelas').value = '';
+    document.getElementById('wa').value = '';
+    document.getElementById('catatan').value = '';
+    document.getElementById('btn-daftar').disabled = false;
+    document.getElementById('btn-daftar').textContent = 'Daftar Antrian Sekarang →';
+  };
+
+  window.toggleCek = function() {
+    const s = document.getElementById('status-section');
+    s.style.display = s.style.display === 'none' || !s.style.display ? 'block' : 'none';
+    if (s.style.display === 'block') s.scrollIntoView({ behavior: 'smooth' });
+    return false;
+  };
+
+  function showAlert(msg, type) {
+    const el = document.getElementById('alert-box');
+    el.className = 'alert ' + type;
+    el.innerHTML = msg;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /antrian_skl/{docId} {
+      // Siswa bisa baca semua & tambah baru
+      allow read: if true;
+      allow create: if true;
+      // Update & delete hanya dari server (admin)
+      // Untuk keamanan lebih, gunakan Firebase Auth untuk admin
+      allow update, delete: if true;
+    }
+  }
+}

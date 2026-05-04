@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel – Antrian SKL SMAN 1 Balongpanggang</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-50: #EAF3DE; --green-100: #C0DD97; --green-200: #97C459;
+    --green-600: #3B6D11; --green-700: #2C5209; --green-800: #27500A;
+    --teal-50: #E1F5EE; --teal-400: #1D9E75; --teal-600: #0F6E56;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-500: #888780; --gray-600: #5F5E5A;
+    --amber-50: #FAEEDA; --amber-400: #BA7517;
+    --red-50: #FCEBEB; --red-400: #E24B4A; --red-600: #A32D2D;
+    --blue-50: #E6F1FB; --blue-400: #378ADD; --blue-600: #185FA5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f4f7f2; color: #1a2e0a; }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #f0f7e8 0%, #d4ead0 100%);
+    padding: 20px;
+  }
+  .login-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(39,80,10,0.14);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  .login-logo {
+    width: 80px; height: 80px;
+    background: var(--green-600);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    border: 3px solid var(--green-100);
+  }
+  .login-logo svg { width: 66px; height: 66px; }
+  .login-card h1 { font-family: 'Fraunces', serif; font-size: 22px; color: var(--green-700); margin-bottom: 6px; }
+  .login-card p { font-size: 13px; color: var(--gray-600); margin-bottom: 28px; }
+  .login-card input {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--gray-100);
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px; margin-bottom: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .login-card input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(59,109,17,0.12); }
+  .btn-login {
+    width: 100%; padding: 14px;
+    background: var(--green-600); color: white;
+    border: none; border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-login:hover { background: var(--green-700); }
+  .login-error { color: var(--red-600); font-size: 13px; margin-top: 10px; display: none; }
+
+  /* DASHBOARD */
+  #admin-screen { display: none; min-height: 100vh; }
+  .topbar {
+    background: white;
+    border-bottom: 2.5px solid var(--green-600);
+    padding: 0 28px;
+    display: flex; align-items: center; gap: 16px;
+    height: 64px;
+    box-shadow: 0 2px 12px rgba(39,80,10,0.08);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-logo { font-family: 'Fraunces', serif; font-size: 16px; color: var(--green-700); font-weight: 700; }
+  .topbar-subtitle { font-size: 12px; color: var(--gray-600); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .btn-logout {
+    padding: 8px 18px; border: 1.5px solid var(--gray-100);
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    color: var(--gray-600); background: white; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--red-400); color: var(--red-600); }
+  .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: white; border-radius: 14px; padding: 20px 18px;
+    border: 1px solid #e8f0e2;
+  }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; line-height: 1; }
+  .stat-num.green { color: var(--green-600); }
+  .stat-num.amber { color: var(--amber-400); }
+  .stat-num.teal { color: var(--teal-400); }
+  .stat-num.gray { color: var(--gray-500); }
+  .stat-lbl { font-size: 12px; color: var(--gray-600); margin-top: 6px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; }
+  .controls {
+    background: white; border-radius: 14px; padding: 18px 20px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    margin-bottom: 20px; border: 1px solid #e8f0e2;
+  }
+  .controls input, .controls select {
+    padding: 9px 14px; border: 1.5px solid var(--gray-100);
+    border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; color: #1a2e0a;
+  }
+  .controls input:focus, .controls select:focus { outline: none; border-color: var(--green-600); }
+  .controls input { min-width: 220px; }
+  .controls label { font-size: 13px; color: var(--gray-600); font-weight: 600; }
+  .btn-export {
+    margin-left: auto; padding: 9px 18px;
+    background: var(--green-50); border: 1.5px solid var(--green-200);
+    color: var(--green-700); border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-export:hover { background: var(--green-100); }
+  .table-wrap {
+    background: white; border-radius: 14px; overflow: hidden;
+    border: 1px solid #e8f0e2;
+    box-shadow: 0 2px 12px rgba(39,80,10,0.06);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--green-50); padding: 13px 16px;
+    text-align: left; font-size: 12px; font-weight: 700;
+    color: var(--green-700); letter-spacing: 0.4px;
+    text-transform: uppercase; border-bottom: 1.5px solid var(--green-100);
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid #f0f4ed; transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f9fcf6; }
+  td { padding: 13px 16px; font-size: 13px; vertical-align: middle; }
+  .no-antrian { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--green-600); }
+  .status-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .s-menunggu { background: var(--amber-50); color: var(--amber-400); border: 1px solid #FAC775; }
+  .s-siap { background: var(--green-50); color: var(--green-600); border: 1px solid var(--green-200); }
+  .s-diambil { background: var(--teal-50); color: var(--teal-600); border: 1px solid #9FE1CB; }
+  .action-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-action {
+    padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid; transition: all 0.15s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    white-space: nowrap;
+  }
+  .btn-siap { background: var(--green-50); color: var(--green-600); border-color: var(--green-200); }
+  .btn-siap:hover { background: var(--green-100); }
+  .btn-wa { background: #e8f8f0; color: #0F6E56; border-color: #9FE1CB; }
+  .btn-wa:hover { background: #d0f2e5; }
+  .btn-diambil { background: var(--teal-50); color: var(--teal-600); border-color: #9FE1CB; }
+  .btn-diambil:hover { background: #c0ecd9; }
+  .btn-hapus { background: var(--red-50); color: var(--red-600); border-color: #F7C1C1; }
+  .btn-hapus:hover { background: #fad0d0; }
+  .btn-reset { background: var(--amber-50); color: var(--amber-400); border-color: #FAC775; }
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--gray-500); font-size: 14px;
+  }
+  .empty-state div { font-size: 40px; margin-bottom: 10px; }
+  .toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: #1a2e0a; color: white;
+    padding: 14px 22px; border-radius: 12px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 999; display: none;
+    max-width: 320px; line-height: 1.5;
+  }
+  .wa-config {
+    background: white; border-radius: 14px; padding: 20px 24px;
+    border: 1px solid #e8f0e2; margin-bottom: 20px;
+  }
+  .wa-config h3 { font-size: 14px; font-weight: 700; color: var(--green-700); margin-bottom: 12px; }
+  .wa-config-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .wa-config input {
+    flex: 1; min-width: 180px; padding: 9px 14px;
+    border: 1.5px solid var(--gray-100); border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;
+  }
+  .wa-config input:focus { outline: none; border-color: var(--green-600); }
+  .btn-save-cfg {
+    padding: 9px 18px; background: var(--green-600); color: white;
+    border: none; border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .wa-hint { font-size: 11px; color: var(--gray-500); margin-top: 8px; line-height: 1.5; }
+  .loading-row td { opacity: 0.5; }
+  .wa-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .wa-sent { background: var(--teal-400); }
+  .wa-unsent { background: var(--gray-500); }
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .topbar { padding: 0 16px; }
+    .main { padding: 20px 14px; }
+    table { font-size: 12px; }
+    td, thead th { padding: 10px 10px; }
+  }
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .controls { flex-direction: column; align-items: stretch; }
+    .controls input { min-width: auto; }
+    .btn-export { margin-left: 0; }
+    .action-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#27500A"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#C0DD97" stroke-width="2"/>
+        <polygon points="50,18 56,38 77,38 61,51 67,71 50,58 33,71 39,51 23,38 44,38" fill="#C0DD97"/>
+        <text x="50" y="90" text-anchor="middle" font-family="serif" font-size="9" fill="#C0DD97" font-weight="bold">SMAN 1</text>
+      </svg>
+    </div>
+    <h1>Panel Admin</h1>
+    <p>Manajemen Antrian SKL<br>SMAN 1 Balongpanggang TP 2025/2026</p>
+    <input type="text" id="login-user" placeholder="Username admin" autocomplete="username">
+    <input type="password" id="login-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="btn-login" onclick="doLogin()">Masuk →</button>
+    <div class="login-error" id="login-error">Username atau password salah.</div>
+    <div style="margin-top:16px;"><a href="index.html" style="font-size:13px; color:var(--green-600); text-decoration:none;">← Kembali ke halaman siswa</a></div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="admin-screen">
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">Admin – Antrian SKL</div>
+      <div class="topbar-subtitle">SMAN 1 Balongpanggang · TP 2025/2026</div>
+    </div>
+    <div class="topbar-right">
+      <span id="admin-name" style="font-size:13px; color:var(--gray-600); font-weight:600;"></span>
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Statistik -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num green" id="a-total">–</div><div class="stat-lbl">Total Pendaftar</div></div>
+      <div class="stat-card"><div class="stat-num amber" id="a-menunggu">–</div><div class="stat-lbl">Menunggu</div></div>
+      <div class="stat-card"><div class="stat-num teal" id="a-siap">–</div><div class="stat-lbl">Siap Diambil</div></div>
+      <div class="stat-card"><div class="stat-num gray" id="a-diambil">–</div><div class="stat-lbl">Sudah Diambil</div></div>
+    </div>
+
+    <!-- Konfigurasi WA -->
+    <div class="wa-config">
+      <h3>💬 Konfigurasi Notifikasi WhatsApp (Fonnte/Wablas)</h3>
+      <div class="wa-config-row">
+        <input type="text" id="wa-token" placeholder="API Token (dari Fonnte.com / Wablas)" value="">
+        <select id="wa-provider" style="padding:9px 14px; border:1.5px solid var(--gray-100); border-radius:10px; font-size:13px;">
+          <option value="fonnte">Fonnte.com</option>
+          <option value="wablas">Wablas.com</option>
+        </select>
+        <button class="btn-save-cfg" onclick="simpanKonfigWA()">Simpan</button>
+      </div>
+      <div class="wa-hint">
+        Daftar di <a href="https://fonnte.com" target="_blank" style="color:var(--teal-600);">fonnte.com</a> atau 
+        <a href="https://wablas.com" target="_blank" style="color:var(--teal-600);">wablas.com</a> untuk mendapatkan API token WhatsApp. 
+        Token disimpan di browser (localStorage). Notifikasi dikirim otomatis saat status diubah ke "Siap Diambil".
+      </div>
+    </div>
+
+    <!-- Filter & Search -->
+    <div class="controls">
+      <input type="text" id="search" placeholder="🔍 Cari nama, NIS, atau nomor antrian..." oninput="renderTable()">
+      <div>
+        <label>Filter Kelas: </label>
+        <select id="filter-kelas" onchange="renderTable()">
+          <option value="">Semua Kelas</option>
+          <option>XII 1</option><option>XII 2</option><option>XII 3</option>
+          <option>XII 4</option><option>XII 5</option><option>XII 6</option>
+          <option>XII 7</option><option>XII 8</option><option>XII 9</option>
+        </select>
+      </div>
+      <div>
+        <label>Status: </label>
+        <select id="filter-status" onchange="renderTable()">
+          <option value="">Semua</option>
+          <option value="menunggu">Menunggu</option>
+          <option value="siap">Siap Diambil</option>
+          <option value="diambil">Sudah Diambil</option>
+        </select>
+      </div>
+      <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+
+    <!-- Tabel -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>No. Antrian</th>
+            <th>Nama Siswa</th>
+            <th>NIS</th>
+            <th>Kelas</th>
+            <th>No. WhatsApp</th>
+            <th>WA</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body">
+          <tr><td colspan="9" class="empty-state"><div>⏳</div>Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // =====================================================
+  // KONFIGURASI FIREBASE — GANTI DENGAN MILIK ANDA
+  // =====================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAbabiGXsPpYkhVgpSpqo2M5kjl1yJ0YKU",
+    authDomain: "skl-sman1balongpanggang.firebaseapp.com",
+    projectId: "skl-sman1balongpanggang",
+    storageBucket: "skl-sman1balongpanggang.firebasestorage.app",
+    messagingSenderId: "192711266431",
+    appId: "1:192711266431:web:142bc018d05fcb2bad6f4a"
+  };
+  // =====================================================
+
+  // AKUN ADMIN — GANTI SEBELUM DEPLOY (multi-admin bisa ditambah)
+  const ADMINS = {
+    "admin": "skl2025",
+    "tata_usaha": "sman1bpg2025"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let allData = [];
+
+  // Login
+  window.doLogin = function() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    if (ADMINS[u] && ADMINS[u] === p) {
+      sessionStorage.setItem('admin_logged', u);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'block';
+      document.getElementById('admin-name').textContent = u;
+      muatData();
+      muatKonfigWA();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  };
+
+  window.doLogout = function() {
+    sessionStorage.removeItem('admin_logged');
+    location.reload();
+  };
+
+  // Cek session
+  if (sessionStorage.getItem('admin_logged')) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    document.getElementById('admin-name').textContent = sessionStorage.getItem('admin_logged');
+    muatData();
+    muatKonfigWA();
+  }
+
+  function muatData() {
+    const q = query(collection(db, "antrian_skl"), orderBy("waktu_daftar", "asc"));
+    onSnapshot(q, (snap) => {
+      allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      hitungStats();
+      renderTable();
+    });
+  }
+
+  function hitungStats() {
+    document.getElementById('a-total').textContent = allData.length;
+    document.getElementById('a-menunggu').textContent = allData.filter(d => d.status === 'menunggu').length;
+    document.getElementById('a-siap').textContent = allData.filter(d => d.status === 'siap').length;
+    document.getElementById('a-diambil').textContent = allData.filter(d => d.status === 'diambil').length;
+  }
+
+  window.renderTable = function() {
+    const s = document.getElementById('search').value.toLowerCase();
+    const fk = document.getElementById('filter-kelas').value;
+    const fs = document.getElementById('filter-status').value;
+    let filtered = allData.filter(d => {
+      const matchSearch = !s || d.nama?.toLowerCase().includes(s) || d.nis?.includes(s) || d.nomor_antrian?.includes(s);
+      const matchKelas = !fk || d.kelas === fk;
+      const matchStatus = !fs || d.status === fs;
+      return matchSearch && matchKelas && matchStatus;
+    });
+    const tbody = document.getElementById('tbl-body');
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div>📋</div>Tidak ada data ditemukan.</div></td></tr>`;
+      return;
+    }
+    const statusLabel = { menunggu: 'Menunggu', siap: 'Siap Diambil', diambil: 'Sudah Diambil' };
+    const statusClass = { menunggu: 's-menunggu', siap: 's-siap', diambil: 's-diambil' };
+    tbody.innerHTML = filtered.map((d, i) => `
+      <tr>
+        <td style="color:var(--gray-500)">${i+1}</td>
+        <td><span class="no-antrian">#${d.nomor_antrian}</span></td>
+        <td><strong>${d.nama}</strong>${d.catatan ? `<br><span style="font-size:11px;color:var(--gray-500)">${d.catatan}</span>` : ''}</td>
+        <td>${d.nis}</td>
+        <td>${d.kelas}</td>
+        <td><a href="https://wa.me/62${d.wa?.replace(/^0/, '')}" target="_blank" style="color:var(--teal-600); text-decoration:none; font-weight:600;">${d.wa}</a></td>
+        <td><span class="wa-status ${d.wa_terkirim ? 'wa-sent' : 'wa-unsent'}" title="${d.wa_terkirim ? 'WA Terkirim' : 'Belum dikirim'}"></span></td>
+        <td><span class="status-badge ${statusClass[d.status] || 's-menunggu'}">${statusLabel[d.status] || d.status}</span></td>
+        <td>
+          <div class="action-row">
+            ${d.status === 'menunggu' ? `<button class="btn-action btn-siap" onclick="ubahStatus('${d.id}','siap','${d.wa}','${d.nama}','${d.nomor_antrian}')">✅ Siap</button>` : ''}
+            ${d.status === 'siap' && !d.wa_terkirim ? `<button class="btn-action btn-wa" onclick="kirimWA('${d.id}','${d.wa}','${d.nama}','${d.nomor_antrian}','${d.kelas}')">💬 Kirim WA</button>` : ''}
+            ${d.status === 'siap' ? `<button class="btn-action btn-diambil" onclick="ubahStatus('${d.id}','diambil')">📋 Diambil</button>` : ''}
+            ${d.status === 'diambil' ? `<button class="btn-action btn-reset" onclick="ubahStatus('${d.id}','menunggu')">↩ Reset</button>` : ''}
+            <button class="btn-action btn-hapus" onclick="hapusData('${d.id}','${d.nama}')">🗑</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  };
+
+  window.ubahStatus = async function(id, status, wa, nama, nomor) {
+    if (status === 'diambil' && !confirm('Tandai surat sudah diambil?')) return;
+    if (status === 'menunggu' && !confirm('Reset status ke Menunggu?')) return;
+    await updateDoc(doc(db, "antrian_skl", id), { status });
+    showToast(`Status diubah: ${status === 'siap' ? '✅ Siap Diambil' : status === 'diambil' ? '📋 Sudah Diambil' : '↩ Menunggu'}`);
+    if (status === 'siap' && wa && nama && nomor) {
+      const auto = confirm(`Kirim notifikasi WhatsApp ke ${wa} (${nama})?`);
+      if (auto) await kirimWA(id, wa, nama, nomor);
+    }
+  };
+
+  window.kirimWA = async function(id, wa, nama, nomor, kelas) {
+    const token = localStorage.getItem('wa_token');
+    const provider = localStorage.getItem('wa_provider') || 'fonnte';
+    if (!token) {
+      showToast('❌ Token WA belum diset! Isi dulu di bagian Konfigurasi WA.'); return;
+    }
+    const pesan = `*SURAT KETERANGAN LULUS*\nSMAN 1 Balongpanggang TP 2025/2026\n\nKepada Yth.\n*${nama}*\nKelas: ${kelas || '-'} | No. Antrian: #${nomor}\n\n✅ Surat Keterangan Lulus Anda *sudah siap diambil* di bagian Tata Usaha sekolah.\n\n📌 Harap datang membawa:\n• Kartu identitas (KTP/Kartu Pelajar)\n• Nomor antrian ini\n\nJam layanan: Senin-Sabtu, 08.00-14.00 WIB\n\n_Terima kasih_ 🎓`;
+
+    try {
+      let url, body, headers;
+      if (provider === 'fonnte') {
+        url = 'https://fonnte.com/api/send_message';
+        headers = { 'Authorization': token };
+        body = new FormData();
+        body.append('target', wa);
+        body.append('message', pesan);
+      } else {
+        url = `https://console.wablas.com/api/send-message`;
+        headers = { 'Authorization': token, 'Content-Type': 'application/json' };
+        body = JSON.stringify({ phone: wa, message: pesan });
+      }
+      const resp = await fetch(url, { method: 'POST', headers, body });
+      if (resp.ok) {
+        await updateDoc(doc(db, "antrian_skl", id), { wa_terkirim: true, waktu_wa: new Date().toISOString() });
+        showToast(`💬 Notifikasi WA terkirim ke ${wa}`);
+      } else {
+        showToast('⚠ Gagal kirim WA. Cek token & koneksi.');
+      }
+    } catch(e) {
+      showToast('❌ Error: ' + e.message);
+    }
+  };
+
+  window.hapusData = async function(id, nama) {
+    if (!confirm(`Hapus data "${nama}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+    await deleteDoc(doc(db, "antrian_skl", id));
+    showToast(`🗑 Data ${nama} dihapus.`);
+  };
+
+  window.simpanKonfigWA = function() {
+    const token = document.getElementById('wa-token').value.trim();
+    const provider = document.getElementById('wa-provider').value;
+    localStorage.setItem('wa_token', token);
+    localStorage.setItem('wa_provider', provider);
+    showToast('✅ Konfigurasi WA disimpan!');
+  };
+
+  function muatKonfigWA() {
+    const t = localStorage.getItem('wa_token');
+    const p = localStorage.getItem('wa_provider') || 'fonnte';
+    if (t) document.getElementById('wa-token').value = t;
+    document.getElementById('wa-provider').value = p;
+  }
+
+  window.exportCSV = function() {
+    const header = ['No', 'Nomor Antrian', 'Nama', 'NIS', 'Kelas', 'WhatsApp', 'Status', 'WA Terkirim'];
+    const rows = allData.map((d, i) => [
+      i+1, d.nomor_antrian, d.nama, d.nis, d.kelas, d.wa, d.status, d.wa_terkirim ? 'Ya' : 'Tidak'
+    ]);
+    const csv = [header, ...rows].map(r => r.map(c => `"${c || ''}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `antrian_skl_sman1bpg_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3500);
+  }
+</script>
+</body>
+</html>
